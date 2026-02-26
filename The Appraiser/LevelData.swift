@@ -102,7 +102,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Dr. Lena Visscher",
             title: "Senior Curator, Authentication",
             institution: "Van Gogh Museum, Amsterdam",
@@ -211,7 +210,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Prof. Marie-Claire Dupont",
             title: "Professor of French Impressionism",
             institution: "École du Louvre, Paris",
@@ -320,7 +318,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Dr. James Aranda",
             title: "Curator, Modern Spanish Collections",
             institution: "Reina Sofía Museum, Madrid",
@@ -435,7 +432,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Prof. Anne van der Meer",
             title: "Professor of Early Netherlandish Painting",
             institution: "Rijksmuseum Research Institute, Amsterdam",
@@ -544,7 +540,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Dr. Gianluca Russo",
             title: "Professor of Baroque Studies",
             institution: "Accademia di Belle Arti di Roma",
@@ -659,7 +654,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Dr. Claire Van Doorn",
             title: "Head of Dutch and Flemish Studies",
             institution: "Mauritshuis, The Hague",
@@ -768,7 +762,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Dr. Patricia Gomez",
             title: "Curator of American Art",
             institution: "Smithsonian American Art Museum, Washington D.C.",
@@ -877,7 +870,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Dr. Emmanuelle Bossert",
             title: "Director, Scientific Research",
             institution: "Centre de Recherche et de Restauration des Musées de France (C2RMF)",
@@ -992,7 +984,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Prof. David Geffen",
             title: "Professor of Post-War American Art",
             institution: "Yale School of Art and Art History",
@@ -1113,7 +1104,6 @@ struct LevelData {
             )
         ],
         expert: ExpertProfile(
-            id: UUID(),
             name: "Prof. Ernst Heymann",
             title: "Former Director, Rembrandt Research Project",
             institution: "University of Amsterdam / Retired",
