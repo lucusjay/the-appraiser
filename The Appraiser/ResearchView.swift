@@ -178,7 +178,7 @@ struct ResearchView: View {
                             .font(.system(size: 10, weight: .bold)).tracking(2)
                             .foregroundStyle(AppColors.gold)
 
-                        Text(""\(artCase.expert.opinion)"")
+                        Text("\"\(artCase.expert.opinion)\"")
                             .font(.system(size: 16, design: .serif))
                             .italic()
                             .foregroundStyle(AppColors.textPrimary)

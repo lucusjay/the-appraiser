@@ -282,7 +282,7 @@ struct CasePreviewSheet: View {
                                     Text(artCase.clientOccupation)
                                         .font(.system(size: 12))
                                         .foregroundStyle(AppColors.textMuted)
-                                    Text(""\(artCase.clientStory)"")
+                                    Text("\"\(artCase.clientStory)\"")
                                         .font(.system(size: 13))
                                         .italic()
                                         .foregroundStyle(AppColors.textSecondary)
