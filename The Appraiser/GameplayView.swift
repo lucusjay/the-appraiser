@@ -5,6 +5,7 @@ import SwiftUI
 
 struct GameplayView: View {
     @Environment(GameManager.self) var game
+    @Environment(\.horizontalSizeClass) var sizeClass
     let artCase: AppraisalCase
 
     @State private var showResearch = false
@@ -19,8 +20,13 @@ struct GameplayView: View {
             AppColors.background.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                topBar
-                mainContent
+                if sizeClass == .compact {
+                    topBarCompact
+                    mainContentCompact
+                } else {
+                    topBar
+                    mainContent
+                }
             }
         }
         .sheet(isPresented: $showResearch) {
@@ -34,11 +40,10 @@ struct GameplayView: View {
         }
     }
 
-    // MARK: - Top Bar
+    // MARK: - Top Bar (iPad / Regular)
 
     private var topBar: some View {
         HStack(spacing: 16) {
-            // Back
             Button {
                 game.goToLevelSelect()
             } label: {
@@ -51,7 +56,6 @@ struct GameplayView: View {
             }
             .buttonStyle(.plain)
 
-            // Case title
             VStack(alignment: .leading, spacing: 1) {
                 Text("CASE \(artCase.levelNumber)")
                     .font(.system(size: 10, weight: .semibold)).tracking(3)
@@ -63,7 +67,6 @@ struct GameplayView: View {
 
             Spacer()
 
-            // Goal
             Text(artCase.goal.rawValue)
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(AppColors.textSecondary)
@@ -74,13 +77,11 @@ struct GameplayView: View {
 
             Spacer()
 
-            // Budget
             BudgetDisplay(
                 remaining: game.roundState.remainingBudget,
                 total: artCase.startingBudget
             )
 
-            // Research button
             Button {
                 showResearch = true
             } label: {
@@ -95,7 +96,6 @@ struct GameplayView: View {
             }
             .buttonStyle(.plain)
 
-            // Submit
             Button {
                 showSubmit = true
             } label: {
@@ -117,20 +117,108 @@ struct GameplayView: View {
         }
     }
 
-    // MARK: - Main Content
+    // MARK: - Top Bar (iPhone / Compact)
+
+    private var topBarCompact: some View {
+        HStack(spacing: 10) {
+            Button {
+                game.goToLevelSelect()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(AppColors.textMuted)
+                    .frame(width: 32, height: 32)
+                    .background(AppColors.surfaceElevated)
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text("CASE \(artCase.levelNumber)")
+                    .font(.system(size: 9, weight: .semibold)).tracking(2)
+                    .foregroundStyle(AppColors.gold)
+                Text(artCase.title)
+                    .font(.system(size: 14, weight: .semibold, design: .serif))
+                    .foregroundStyle(AppColors.textPrimary)
+                    .lineLimit(1)
+            }
+
+            Spacer()
+
+            HStack(spacing: 4) {
+                Image(systemName: "dollarsign.circle.fill")
+                    .font(.system(size: 11))
+                    .foregroundStyle(budgetColor)
+                Text("$\(game.roundState.remainingBudget.formatted())")
+                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(budgetColor)
+            }
+
+            Button {
+                showResearch = true
+            } label: {
+                Image(systemName: "books.vertical.fill")
+                    .font(.system(size: 15))
+                    .foregroundStyle(AppColors.gold)
+                    .frame(width: 36, height: 36)
+                    .background(AppColors.gold.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppColors.gold.opacity(0.3), lineWidth: 1))
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                showSubmit = true
+            } label: {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 15))
+                    .foregroundStyle(AppColors.background)
+                    .frame(width: 36, height: 36)
+                    .background(AppColors.gold)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(AppColors.surface)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(AppColors.gold.opacity(0.15)).frame(height: 1)
+        }
+    }
+
+    private var budgetColor: Color {
+        let fraction = Double(game.roundState.remainingBudget) / Double(artCase.startingBudget)
+        return fraction > 0.5 ? AppColors.success : fraction > 0.25 ? .orange : AppColors.failure
+    }
+
+    // MARK: - Main Content (iPad)
 
     private var mainContent: some View {
         HStack(spacing: 0) {
-            // Left: Artwork
             artworkPanel
                 .frame(maxWidth: .infinity)
 
-            // Divider
             Rectangle().fill(AppColors.gold.opacity(0.15)).frame(width: 1)
 
-            // Right: Tools + Notebook
             sidePanel
                 .frame(width: 340)
+        }
+    }
+
+    // MARK: - Main Content (iPhone)
+
+    private var mainContentCompact: some View {
+        GeometryReader { geo in
+            VStack(spacing: 0) {
+                artworkPanel
+                    .frame(height: geo.size.height * 0.42)
+
+                Rectangle().fill(AppColors.gold.opacity(0.15)).frame(height: 1)
+
+                sidePanel
+                    .frame(maxHeight: .infinity)
+            }
         }
     }
 
@@ -138,10 +226,8 @@ struct GameplayView: View {
 
     private var artworkPanel: some View {
         VStack(spacing: 0) {
-            // Tool selector bar
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
-                    // Normal view
                     ToolChipButton(
                         label: "Normal View",
                         icon: "eye",
@@ -179,7 +265,6 @@ struct GameplayView: View {
             }
             .background(AppColors.surface.opacity(0.5))
 
-            // Artwork canvas
             ZStack {
                 let activeOverlay = game.roundState.activeToolOverlay
                 let finding = activeOverlay.flatMap { artCase.toolFindings[$0] }
@@ -190,7 +275,6 @@ struct GameplayView: View {
                     finding: finding
                 )
 
-                // Current tool info overlay (bottom)
                 if let overlay = activeOverlay,
                    let finding = artCase.toolFindings[overlay] {
                     VStack {
@@ -236,7 +320,6 @@ struct GameplayView: View {
 
     private var sidePanel: some View {
         VStack(spacing: 0) {
-            // Tab selector
             HStack(spacing: 0) {
                 TabButton(title: "Tools", isSelected: activeTab == .tools) {
                     activeTab = .tools
@@ -263,7 +346,6 @@ struct GameplayView: View {
     private var toolsTab: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // Client brief
                 VStack(alignment: .leading, spacing: 10) {
                     Label("CLIENT BRIEF", systemImage: "person.circle")
                         .font(.system(size: 10, weight: .bold)).tracking(2)
@@ -285,7 +367,6 @@ struct GameplayView: View {
 
                 Divider().background(AppColors.gold.opacity(0.15))
 
-                // Artwork details
                 VStack(alignment: .leading, spacing: 8) {
                     Label("ARTWORK", systemImage: "photo.artframe")
                         .font(.system(size: 10, weight: .bold)).tracking(2)
@@ -300,7 +381,6 @@ struct GameplayView: View {
 
                 Divider().background(AppColors.gold.opacity(0.15))
 
-                // Available tools
                 VStack(alignment: .leading, spacing: 12) {
                     Label("EXAMINATION TOOLS", systemImage: "wrench.and.screwdriver")
                         .font(.system(size: 10, weight: .bold)).tracking(2)
@@ -361,7 +441,6 @@ struct GameplayView: View {
                     }
                 }
 
-                // Expert note if consulted
                 if game.roundState.expertConsulted {
                     VStack(alignment: .leading, spacing: 8) {
                         Label("EXPERT OPINION", systemImage: "person.text.rectangle")
@@ -388,7 +467,6 @@ struct GameplayView: View {
                     .padding(.horizontal, 16)
                 }
 
-                // Books read
                 let booksRead = artCase.referenceBooks.filter { game.roundState.booksRead.contains($0.id) }
                 if !booksRead.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
