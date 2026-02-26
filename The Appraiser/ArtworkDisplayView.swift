@@ -107,7 +107,7 @@ private struct SwirlingStyle: View {
                 let cy = s.height * (0.3 + 0.4 * cos(t * .pi * 1.7))
                 let r = s.width * 0.08 * (0.5 + t)
                 let path = Path(ellipseIn: CGRect(x: cx - r, y: cy - r, width: r * 2, height: r * 2))
-                ctx.stroke(path, with: .color(i.isMultiple(of: 2) ? primary : accent, opacity: 0.25), lineWidth: 3)
+                ctx.stroke(path, with: .color((i.isMultiple(of: 2) ? primary : accent).opacity(0.25)), lineWidth: 3)
             }
         }
     }
@@ -126,7 +126,7 @@ private struct GesturalStyle: View {
                     control1: CGPoint(x: x + s.width * 0.1, y: s.height * 0.3),
                     control2: CGPoint(x: x - s.width * 0.05, y: s.height * 0.7)
                 )
-                ctx.stroke(p, with: .color(i.isMultiple(of: 3) ? primary : accent, opacity: 0.3), lineWidth: 2)
+                ctx.stroke(p, with: .color((i.isMultiple(of: 3) ? primary : accent).opacity(0.3)), lineWidth: 2)
             }
         }
     }
@@ -140,13 +140,13 @@ private struct ClassicalStyle: View {
             for i in 0..<5 {
                 let x = s.width * (0.1 + Double(i) * 0.2)
                 let rect = CGRect(x: x - 8, y: s.height * 0.15, width: 16, height: s.height * 0.7)
-                ctx.fill(Path(rect), with: .color(accent, opacity: 0.12))
+                ctx.fill(Path(rect), with: .color(accent.opacity(0.12)))
             }
             // Arch
             var arch = Path()
             arch.addArc(center: CGPoint(x: s.width / 2, y: s.height * 0.3),
                         radius: s.width * 0.35, startAngle: .degrees(180), endAngle: .degrees(0), clockwise: false)
-            ctx.stroke(arch, with: .color(accent, opacity: 0.3), lineWidth: 2)
+            ctx.stroke(arch, with: .color(accent.opacity(0.3)), lineWidth: 2)
         }
     }
 }
@@ -162,14 +162,14 @@ private struct InteriorStyle: View {
             shaft.addLine(to: CGPoint(x: s.width * 0.55, y: s.height * 0.8))
             shaft.addLine(to: CGPoint(x: s.width * 0.35, y: 0))
             shaft.closeSubpath()
-            ctx.fill(shaft, with: .color(accent, opacity: 0.18))
+            ctx.fill(shaft, with: .color(accent.opacity(0.18)))
             // Floor tiles
             for row in 0..<4 {
                 for col in 0..<6 {
                     let x = s.width * (Double(col) / 5.0)
                     let y = s.height * (0.65 + Double(row) * 0.1)
                     let rect = CGRect(x: x, y: y, width: s.width / 5 - 2, height: s.height * 0.08)
-                    ctx.stroke(Path(rect), with: .color(accent, opacity: 0.12), lineWidth: 1)
+                    ctx.stroke(Path(rect), with: .color(accent.opacity(0.12)), lineWidth: 1)
                 }
             }
         }
@@ -188,7 +188,7 @@ private struct AbstractFieldStyle: View {
                 (CGRect(x: 0, y: s.height * 0.80, width: s.width, height: s.height * 0.20), dark, 0.9)
             ]
             for (rect, color, opacity) in rects {
-                ctx.fill(Path(rect), with: .color(color, opacity: opacity))
+                ctx.fill(Path(rect), with: .color(color.opacity(opacity)))
             }
         }
     }
@@ -203,7 +203,7 @@ private struct PortraitStyle: View {
                 x: s.width * 0.3, y: s.height * 0.1,
                 width: s.width * 0.4, height: s.height * 0.5
             )
-            ctx.fill(Path(ellipseIn: faceRect), with: .color(accent, opacity: 0.35))
+            ctx.fill(Path(ellipseIn: faceRect), with: .color(accent.opacity(0.35)))
             // Shoulders
             var shoulders = Path()
             shoulders.move(to: CGPoint(x: s.width * 0.15, y: s.height * 0.95))
@@ -212,7 +212,7 @@ private struct PortraitStyle: View {
                 control1: CGPoint(x: s.width * 0.2, y: s.height * 0.55),
                 control2: CGPoint(x: s.width * 0.8, y: s.height * 0.55)
             )
-            ctx.stroke(shoulders, with: .color(accent, opacity: 0.3), lineWidth: 3)
+            ctx.stroke(shoulders, with: .color(accent.opacity(0.3)), lineWidth: 3)
         }
     }
 }
@@ -223,7 +223,7 @@ private struct LandscapeStyle: View {
         Canvas { ctx, s in
             // Sky
             ctx.fill(Path(CGRect(x: 0, y: 0, width: s.width, height: s.height * 0.4)),
-                     with: .color(accent, opacity: 0.4))
+                     with: .color(accent.opacity(0.4)))
             // Hills
             var hills = Path()
             hills.move(to: CGPoint(x: 0, y: s.height * 0.55))
@@ -235,7 +235,7 @@ private struct LandscapeStyle: View {
             hills.addLine(to: CGPoint(x: s.width, y: s.height))
             hills.addLine(to: CGPoint(x: 0, y: s.height))
             hills.closeSubpath()
-            ctx.fill(hills, with: .color(primary, opacity: 0.6))
+            ctx.fill(hills, with: .color(primary.opacity(0.6)))
         }
     }
 }
@@ -246,7 +246,7 @@ private struct DramaticStyle: View {
         Canvas { ctx, s in
             // Near-black background
             ctx.fill(Path(CGRect(x: 0, y: 0, width: s.width, height: s.height)),
-                     with: .color(dark, opacity: 0.85))
+                     with: .color(dark.opacity(0.85)))
             // Light shaft from upper left
             var shaft = Path()
             shaft.move(to: CGPoint(x: s.width * 0.05, y: 0))
@@ -254,7 +254,7 @@ private struct DramaticStyle: View {
             shaft.addLine(to: CGPoint(x: s.width * 0.70, y: s.height * 0.7))
             shaft.addLine(to: CGPoint(x: s.width * 0.30, y: 0))
             shaft.closeSubpath()
-            ctx.fill(shaft, with: .color(accent, opacity: 0.22))
+            ctx.fill(shaft, with: .color(accent.opacity(0.22)))
         }
     }
 }
