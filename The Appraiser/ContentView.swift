@@ -1,61 +1,42 @@
-//
-//  ContentView.swift
-//  The Appraiser
-//
-//  Created by Lucus Landers on 2/24/26.
-//
+// ContentView.swift
+// The Appraiser — Root Navigation Controller
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @State private var game = GameManager()
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        Group {
+            switch game.currentScreen {
+            case .mainMenu:
+                MainMenuView()
+
+            case .levelSelect:
+                LevelSelectView()
+
+            case .gameplay(let artCase):
+                GameplayView(artCase: artCase)
+
+            case .results(let result):
+                ResultsView(result: result)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
         }
+        .environment(game)
+        .animation(.easeInOut(duration: 0.3), value: screenID)
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+    /// A stable string key for the current screen — drives the cross-fade transition.
+    private var screenID: String {
+        switch game.currentScreen {
+        case .mainMenu:            return "menu"
+        case .levelSelect:         return "levels"
+        case .gameplay(let c):     return "game-\(c.id)"
+        case .results(let r):      return "results-\(r.levelID)"
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
